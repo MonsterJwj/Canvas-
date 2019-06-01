@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>风景时钟</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="border: 1px solid purple;background: #000"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById("canvas");
+    var cxt = canvas.getContext("2d");
+
+    //填充图片
+
+
+    function clock(){
+        //绘制时钟
+
+        //获取当前时间
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        min = min<10 ? min = "0" + min:min;
+        var sec = date.getSeconds();
+        sec = sec<10 ? sec = "0" + sec:sec;
+        hour = hour > 12 ? hour - 12 : hour;
+        hour += min/60;
+
+        //每一秒都清画布，清完画布后，在画时分秒针
+        cxt.clearRect(0,0,canvas.width,canvas.height);
+
+        var img = new Image();
+        img.src = "./img/6.jpg";
+
+        //圆盘
+        cxt.strokeStyle = "skyblue";
+        cxt.lineWidth = 10;
+        cxt.beginPath();
+        cxt.arc(250,250,200,0,Math.PI*2,false);
+
+        //剪裁图片到圆盘中
+        cxt.stroke();
+        cxt.closePath();
+        cxt.clip();
+        cxt.drawImage(img,250,150,400,400,50,50,400,400);
+
+
+        //时刻度
+        cxt.save();
+        cxt.translate(250,250);
+        cxt.strokeStyle = "yellow";
+        cxt.lineWidth = 6;
+
+        for (var i=0;i<12;i++){
+            cxt.rotate(Math.PI/180*30);
+            cxt.beginPath();
+            cxt.moveTo(0,-195);
+            cxt.lineTo(0,-177);
+            cxt.closePath();
+            cxt.stroke();
+        }
+        cxt.restore();
+
+        //分刻度
+        cxt.save();
+        cxt.translate(250,250);
+        cxt.strokeStyle = "yellow";
+        cxt.lineWidth = 4;
+
+        for (var j=0;j<60;j++){
+            cxt.rotate(Math.PI/180*6);
+            cxt.beginPath();
+            cxt.moveTo(0,-195);
+            cxt.lineTo(0,-185);
+            cxt.closePath();
+            cxt.stroke();
+        }
+        cxt.restore();
+
+        //时针
+        cxt.save();
+        cxt.translate(250,250);
+        cxt.rotate(30*Math.PI/180*hour);
+        cxt.strokeStyle = "skyblue";
+        cxt.lineWidth = 6;
+
+        cxt.beginPath();
+        cxt.moveTo(0,10);
+        cxt.lineTo(0,-140);
+        cxt.closePath();
+        cxt.stroke();
+
+        cxt.restore();
+
+        //分针
+        cxt.save();
+        cxt.translate(250,250);
+        cxt.rotate(min*6*Math.PI/180);
+        cxt.strokeStyle = "yellow";
+        cxt.lineWidth = 4;
+
+        cxt.beginPath();
+        cxt.moveTo(0,10);
+        cxt.lineTo(0,-145);
+        cxt.closePath();
+        cxt.stroke();
+
+        cxt.restore();
+
+        //秒针
+        cxt.save();
+        cxt.translate(250,250);
+        cxt.rotate(sec*Math.PI/180*6);
+        cxt.strokeStyle = "#ff0000";
+        cxt.lineWidth = 2;
+
+        cxt.beginPath();
+        cxt.moveTo(0,10);
+        cxt.lineTo(0,-160);
+        cxt.closePath();
+        cxt.stroke();
+
+        //秒针下面的小圆
+        cxt.beginPath();
+        cxt.arc(0,0,6,0,Math.PI*2,false);
+        cxt.closePath();
+        cxt.fillStyle = "yellow";
+        cxt.fill();
+        cxt.strokeStyle = "#ff0000";
+        cxt.stroke();
+
+        //秒针上面的小圆
+        cxt.beginPath();
+        cxt.arc(0,-140,6,0,Math.PI*2,false);
+        cxt.closePath();
+        cxt.fillStyle = "yellow";
+        cxt.fill();
+        cxt.strokeStyle = "#ff0000";
+        cxt.stroke();
+        cxt.restore();
+
+        //填充文本
+        cxt.font = "20px 楷体";
+        cxt.textAlign = "center";
+
+        cxt.fillStyle = "#fff";
+        cxt.fillText(date.getHours()+":"+min+":"+sec,250,390);
+        cxt.fillText("U娜一生推",250,420);
+        cxt.lineWidth = 1;
+        cxt.strokeStyle = "purple";
+        cxt.strokeText("U娜一生推",250,420);
+    }
+    clock();
+    setInterval(clock,1000);
+
+</script>
+</html>
